@@ -8,16 +8,9 @@ import useSetState from 'src/hooks/useSetState';
 import Table from 'antd/lib/table';
 import message from 'antd/lib/message';
 import 'antd/dist/antd.css';
-import Login from './Login';
 import { request } from 'src/appHelper';
 import { generateNewDefaultConfig } from 'src/services/mockService';
 import dayjs from 'dayjs';
-import relativeTime from 'dayjs/plugin/relativeTime';
-import timezone from 'dayjs/plugin/timezone';
-import utc from 'dayjs/plugin/utc';
-
-dayjs.locale('zh-cn');
-dayjs.extend(relativeTime);
 
 const columns = [
   {
@@ -38,36 +31,16 @@ const columns = [
     },
   },
 ];
-const Entry = () => {
+const WebsiteList = () => {
   const [state, setState] = useSetState({
-    loadingUser: true,
     list: [] as any[],
     showNewPopup: false,
     needPullList: true,
-    hasLogin: false,
     isLoadingTable: false,
   });
+
   useEffect(() => {
-    const token = localStorage.getItem('lowcode_token');
-    if (token) {
-      request('/api/user/check')
-        .then((res) => {
-          if (res.data?.token) {
-            setState({ hasLogin: true });
-          } else if (res.data.message) {
-            message.error(res.data.message);
-          } else if (res.data.statusCode === 401 || res.status >= 400) {
-            localStorage.removeItem('lowcode_token');
-            message.error('登录过期，请重新登录');
-          }
-        })
-        .finally(() => {
-          setState({ loadingUser: false });
-        });
-    }
-  }, []);
-  useEffect(() => {
-    if (!state.needPullList || !state.hasLogin) return;
+    if (!state.needPullList) return;
     setState({ isLoadingTable: true });
     request('/api/website')
       .then((res) => {
@@ -82,15 +55,10 @@ const Entry = () => {
       .finally(() => {
         setState({ needPullList: false, isLoadingTable: false });
       });
-  }, [state.needPullList, state.hasLogin]);
-  if (state.loadingUser) {
-    return <div>loading...</div>;
-  }
-  if (!state.hasLogin) {
-    return <Login onLoginSuccess={() => setState({ hasLogin: true })} />;
-  }
+  }, [state.needPullList]);
   return (
     <main style={{ margin: '0 auto', maxWidth: '50rem', paddingTop: '3rem' }}>
+      <h2>Website admin</h2>
       <Button
         type="primary"
         onClick={() => setState({ showNewPopup: true })}
@@ -149,4 +117,4 @@ const Entry = () => {
   );
 };
 
-export default Entry;
+export default WebsiteList

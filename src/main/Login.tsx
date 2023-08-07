@@ -4,6 +4,7 @@ import Form from 'antd/lib/form';
 import Input from 'antd/lib/input';
 import { useEffect, useState } from 'react';
 import { request } from '../appHelper';
+import { useAccountStore } from 'src/store/account';
 
 interface IProps {
   onLoginSuccess: () => void;
@@ -11,6 +12,7 @@ interface IProps {
 
 const Login = ({ onLoginSuccess }: IProps) => {
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const accountStore = useAccountStore();
   return (
     <main style={{ margin: '0 auto', maxWidth: '30rem', paddingTop: '3rem' }}>
       <h1 style={{ textAlign: 'center' }}>Login</h1>
@@ -20,11 +22,20 @@ const Login = ({ onLoginSuccess }: IProps) => {
         style={{ marginTop: 50 }}
         onFinish={async (values) => {
           request
-            .post<{ token: string; message?: string }>('/api/user/login', values)
+            .post<{
+              accessToken: string;
+              refreshToken: string;
+              userName: string;
+              message?: string;
+            }>('/api/user/login', values)
             .then((res) => {
               const { data } = res;
-              if (data.token) {
-                localStorage.setItem('lowcode_token', data.token);
+              if (data.accessToken) {
+                accountStore.set({
+                  accessToken: data.accessToken,
+                  refreshToken: data.refreshToken,
+                  username: res.data.userName,
+                });
                 onLoginSuccess();
               } else if (data.message) {
                 message.warning(data.message);
