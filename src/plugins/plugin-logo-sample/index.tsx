@@ -2,8 +2,7 @@ import React from 'react';
 import { IPublicModelPluginContext } from '@alilc/lowcode-types';
 import { Dropdown, Menu } from '@alifd/next';
 import './index.scss';
-import { observer } from 'mobx-react-lite';
-import { website } from 'src/store';
+import { useWebsiteStore } from 'src/store/website';
 export interface IProps {
   logo?: string;
   href?: string;
@@ -11,9 +10,10 @@ export interface IProps {
   scenarioDisplayName?: string;
 }
 
-const Logo: React.FC<IProps> = observer((props): React.ReactElement => {
+const Logo: React.FC<IProps> = (props): React.ReactElement => {
   const { scenarioDisplayName, scenarioInfo } = props;
   const urls = scenarioInfo?.urls || [];
+  const website = useWebsiteStore()
   return (
     <div className="lowcode-plugin-logo">
       <a
@@ -48,7 +48,7 @@ const Logo: React.FC<IProps> = observer((props): React.ReactElement => {
       <div className="scenario-name">网站名：{website.name}</div>
     </div>
   );
-});
+};
 // 示例 Logo widget
 const LogoSamplePlugin = (ctx: IPublicModelPluginContext) => {
   return {

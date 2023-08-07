@@ -3,8 +3,8 @@ import { injectAssets } from '@alilc/lowcode-plugin-inject';
 import assets from '../../services/assets.json';
 import { getProjectSchema } from '../../services/mockService';
 import { Message } from '@alifd/next';
-import { website } from 'src/store';
 import { request } from 'src/appHelper';
+import { useWebsiteStore } from 'src/store/website';
 const EditorInitPlugin = (ctx: IPublicModelPluginContext, options: any) => {
   return {
     async init() {
@@ -26,10 +26,10 @@ const EditorInitPlugin = (ctx: IPublicModelPluginContext, options: any) => {
         if (id) {
           const res = await request(`/api/website/${id}`);
           const { config: configData, name } = await res.data;
-          if(configData) {
+          if (configData) {
             const { projectSchema: _projectSchema } = configData;
             schema = _projectSchema;
-            website.setName(name);
+            useWebsiteStore.setState({ name: name });
           }
         }
       } catch (e) {
@@ -43,9 +43,9 @@ const EditorInitPlugin = (ctx: IPublicModelPluginContext, options: any) => {
         Message.warning({
           title: '远端无配置，尝试加载本地配置',
           duration: 5000,
-        })
+        });
         schema = await getProjectSchema(scenarioName);
-        website.setName('本地网页');
+        useWebsiteStore.setState({ name: '本地网页' });
       }
 
       // 加载 schema

@@ -1,21 +1,12 @@
-import Button from 'antd/lib/button';
-import Form from 'antd/lib/form';
-import Input from 'antd/lib/input';
-import Modal from 'antd/lib/modal';
 import React, { useEffect } from 'react';
 import useSetState from 'src/hooks/useSetState';
 import Skeleton from 'antd/lib/skeleton';
 
 import Table from 'antd/lib/table';
-import message from 'antd/lib/message';
 import 'antd/dist/antd.css';
 import Login from './Login';
-import { request } from 'src/appHelper';
-import { generateNewDefaultConfig } from 'src/services/mockService';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import timezone from 'dayjs/plugin/timezone';
-import utc from 'dayjs/plugin/utc';
 import { useAccountStore } from 'src/store/account';
 import { router } from './routes';
 import { RouterProvider } from 'react-router-dom';

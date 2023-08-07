@@ -4,7 +4,7 @@
     "edit": "./src/edit.ts",
     "index": "./src/main.tsx"
   },
-  "vendor": false,
+  "vendor": true,
   "devServer": {
     "hot": false
   },

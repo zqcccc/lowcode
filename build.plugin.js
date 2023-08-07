@@ -70,5 +70,9 @@ module.exports = ({ onGetWebpackConfig }) => {
     config.module.rule('css').use('postcss-loader').store.get('options').config.path =
       path.resolve('./postcss.config.js');
     // console.log(config.module.rule('css').use('postcss-loader').store.get('options'));
+
+    // config
+    //   .plugin('BundleAnalyzerPlugin')
+    //   .use(require('webpack-bundle-analyzer').BundleAnalyzerPlugin);
   });
 };
