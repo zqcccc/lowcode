@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import useSetState from 'src/hooks/useSetState';
-import Skeleton from 'antd/lib/skeleton';
+// import Skeleton from 'antd/lib/skeleton';
 
-import Table from 'antd/lib/table';
+// import Table from 'antd/lib/table';
 import 'antd/dist/antd.css';
 import Login from './Login';
 import dayjs from 'dayjs';

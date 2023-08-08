@@ -7,11 +7,10 @@ import useSetState from 'src/hooks/useSetState';
 
 import Table from 'antd/lib/table';
 import message from 'antd/lib/message';
-import 'antd/dist/antd.css';
 import { request } from 'src/appHelper';
-import { generateNewDefaultConfig } from 'src/services/mockService';
+// import { generateNewDefaultConfig } from 'src/services/mockService';
 import dayjs from 'dayjs';
-import { Transfer } from 'antd';
+import Transfer from 'antd/lib/transfer';
 
 const UsersAdmin = () => {
   const [state, setState] = useSetState({
