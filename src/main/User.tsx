@@ -92,8 +92,7 @@ const UsersAdmin = () => {
   }, [state.needPullList]);
 
   return (
-    <main style={{ margin: '0 auto', maxWidth: '50rem', paddingTop: '3rem' }}>
-      <h2>User admin</h2>
+    <main style={{ margin: '0 auto', maxWidth: '50rem', paddingTop: '2rem' }}>
       <Button
         type="primary"
         onClick={() => setState({ showNewPopup: true })}
@@ -119,9 +118,9 @@ const UsersAdmin = () => {
       >
         <Form
           initialValues={state.editingUser?.roles.map((i: any) => i.id)}
-          labelCol={{ span: 8 }}
-          wrapperCol={{ span: 16 }}
-          style={{ marginTop: 50 }}
+          labelCol={{ span: 3 }}
+          wrapperCol={{ span: 20 }}
+          style={{ marginTop: 40 }}
           onFinish={async (values) => {
             request
               .post('/api/user/update', {
@@ -140,8 +139,9 @@ const UsersAdmin = () => {
               });
           }}
         >
-          <Form.Item name="roles">
+          <Form.Item name="roles" label="Role">
             <Transfer
+              titles={['未选', '已选']}
               dataSource={state.roles.map((i) => ({
                 key: i.id.toString(),
                 title: i.name,
@@ -204,6 +204,19 @@ const UsersAdmin = () => {
               {
                 min: 6,
                 message: '最少6位',
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label="Email"
+            name="email"
+            rules={[
+              { required: true, message: '不可为空' },
+              {
+                type: 'email',
+                message: '请输入正确的邮箱',
               },
             ]}
           >
