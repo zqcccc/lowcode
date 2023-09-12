@@ -5,7 +5,7 @@ import {
   TeamOutlined,
   UserOutlined,
 } from '@ant-design/icons';
-import type { MenuProps } from 'antd';
+import { Button, MenuProps } from 'antd';
 import { Breadcrumb, Layout, Menu } from 'antd';
 import React, { useState } from 'react';
 import {
@@ -16,6 +16,7 @@ import {
   useNavigate,
   useParams,
 } from 'react-router-dom';
+import { useAccountStore } from 'src/store/account';
 import RoleAdmin from '../Role';
 import UsersAdmin from '../User';
 import WebsiteList from '../WebList';
@@ -45,6 +46,7 @@ interface RouteItem {
   label: React.ReactNode;
   key: React.Key;
   children?: RouteItem[];
+  permissions?: string[];
 }
 
 export const defaultRoutes: RouteItem[] = [
@@ -62,6 +64,7 @@ export const defaultRoutes: RouteItem[] = [
     icon: <UserOutlined />,
     label: 'User',
     key: '/users',
+    permissions: ['generalEdit'],
   },
   {
     path: '/roles',
@@ -69,25 +72,45 @@ export const defaultRoutes: RouteItem[] = [
     icon: <PieChartOutlined />,
     label: 'Role',
     key: '/roles',
+    permissions: ['generalEdit'],
   },
 ];
-
-const items: MenuItem[] = defaultRoutes.map((route) => {
-  const { label, key, icon, children } = route;
-  return getItem(
-    label,
-    key,
-    icon,
-    children?.map?.((child) => getItem(child.label, child.key)),
-  );
-});
 
 const SideBar: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
   const match = useMatches();
-  console.log('%c match: ', 'font-size:12px;background-color: #EA7E5C;color:#fff;', match);
+
+  const accountStore = useAccountStore();
 
   const curRoute = defaultRoutes.find((route) => route.path === match[1].pathname);
+
+  const items: MenuItem[] = defaultRoutes
+    .map((route) => {
+      const { label, key, icon, children, permissions } = route;
+      if (permissions) {
+        if (
+          permissions?.some((permission) =>
+            accountStore.userInfo?.permissions?.includes(permission),
+          )
+        ) {
+          return getItem(
+            label,
+            key,
+            icon,
+            children?.map?.((child) => getItem(child.label, child.key)),
+          );
+        } else {
+          return null;
+        }
+      }
+      return getItem(
+        label,
+        key,
+        icon,
+        children?.map?.((child) => getItem(child.label, child.key)),
+      );
+    })
+    .filter(Boolean);
 
   const navigate = useNavigate();
   return (
@@ -117,7 +140,19 @@ const SideBar: React.FC = () => {
         />
       </Sider>
       <Layout className="site-layout">
-        <Header className="site-layout-background" style={{ padding: 0, background: '#fff' }} />
+        <Header
+          className="site-layout-background"
+          style={{ padding: 0, background: '#fff', display: 'flex', alignItems: 'center' }}
+        >
+          <Button
+            style={{ margin: '0 10px 0 auto' }}
+            onClick={() => {
+              useAccountStore.getState().empty();
+            }}
+          >
+            Log out
+          </Button>
+        </Header>
         <Content style={{ margin: '0 16px' }}>
           <Breadcrumb style={{ margin: '16px 0' }}>
             <Breadcrumb.Item>Home</Breadcrumb.Item>

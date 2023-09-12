@@ -10,6 +10,7 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import { useAccountStore } from 'src/store/account';
 import { router } from './routes';
 import { RouterProvider } from 'react-router-dom';
+import { request } from 'src/appHelper';
 
 dayjs.locale('zh-cn');
 dayjs.extend(relativeTime);
@@ -25,44 +26,26 @@ const Entry = () => {
   });
 
   const accountStore = useAccountStore();
-  // useEffect(() => {
-  //   const token = accountStore.refreshToken;
-  //   if (token) {
-  //     setState({ loadingUser: true });
-  //     request('/api/user/refresh', { params: { refreshToken: token } })
-  //       .then((res) => {
-  //         if (res.data?.accessToken) {
-  //           setState({ hasLogin: true });
-  //           accountStore.set({
-  //             accessToken: res.data.accessToken,
-  //             refreshToken: res.data.refreshToken,
-  //             username: res.data.userName,
-  //           });
-  //         } else {
-  //           accountStore.set({ username: '', accessToken: '', refreshToken: '' });
-  //           // if (res.data.message) {
-  //           //   message.error(res.data.message);
-  //           // } else if (res.data.statusCode === 401 || res.status >= 400) {
-  //           //   message.error('登录过期，请重新登录');
-  //           // }
-  //         }
-  //       })
-  //       .finally(() => {
-  //         setState({ loadingUser: false });
-  //       });
-  //   }
-  // }, []);
-  // if (state.loadingUser) {
-  //   return (
-  //     <>
-  //       {Array(2)
-  //         .fill(0)
-  //         .map((_, i) => (
-  //           <Skeleton key={i} active paragraph={{ rows: 10 }} />
-  //         ))}
-  //     </>
-  //   );
-  // }
+  useEffect(() => {
+    const token = accountStore.accessToken;
+    if (token) {
+      setState({ loadingUser: true });
+      request('/api/user')
+        .then((res) => {
+          if (res.data)
+            accountStore.set({
+              userInfo: {
+                username: res.data.username,
+                roles: res.data.roles.map((r: any) => r.name),
+                permissions: res.data.permissions,
+              },
+            });
+        })
+        .finally(() => {
+          setState({ loadingUser: false });
+        });
+    }
+  }, [accountStore.accessToken]);
   if (!accountStore.accessToken) {
     return <Login onLoginSuccess={() => setState({ hasLogin: true })} />;
   }

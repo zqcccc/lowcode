@@ -57,7 +57,7 @@ const WebsiteList = () => {
   }, [state.needPullList]);
   return (
     <main style={{ margin: '0 auto', maxWidth: '50rem', paddingTop: '3rem' }}>
-      <h2>Website admin</h2>
+      {/* <h2>Website admin</h2> */}
       <Button
         type="primary"
         onClick={() => setState({ showNewPopup: true })}
