@@ -52,6 +52,18 @@ module.exports = ({ onGetWebpackConfig }) => {
     config.plugins.delete('hot');
     config.devServer.hot(false);
     config.devServer.proxy({
+      '/int/api': {
+        target: 'https://app-v2-int.kararu.ai',
+        changeOrigin: true,
+        secure: false,
+        pathRewrite: { '^/int': '' },
+      },
+      '/prod/api': {
+        target: 'https://app-v2.kararu.ai',
+        changeOrigin: true,
+        secure: false,
+        pathRewrite: { '^/prod': '' },
+      },
       '/api': {
         // target: 'http://arm1.onlylike.work:3022',
         target: 'http://localhost:3022',

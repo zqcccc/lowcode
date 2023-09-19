@@ -17,6 +17,7 @@ import {
   useParams,
 } from 'react-router-dom';
 import { useAccountStore } from 'src/store/account';
+import Operations from '../Operations';
 import RoleAdmin from '../Role';
 import UsersAdmin from '../User';
 import WebsiteList from '../WebList';
@@ -52,10 +53,18 @@ interface RouteItem {
 export const defaultRoutes: RouteItem[] = [
   {
     path: '/',
+    element: <Operations />,
+    icon: <DesktopOutlined />,
+    label: 'Kararu',
+    key: '/',
+    // children: [],
+  },
+  {
+    path: '/website',
     element: <WebsiteList />,
     icon: <DesktopOutlined />,
     label: 'Website',
-    key: '/',
+    key: '/website',
     // children: [],
   },
   {
@@ -144,14 +153,17 @@ const SideBar: React.FC = () => {
           className="site-layout-background"
           style={{ padding: 0, background: '#fff', display: 'flex', alignItems: 'center' }}
         >
-          <Button
-            style={{ margin: '0 10px 0 auto' }}
-            onClick={() => {
-              useAccountStore.getState().empty();
-            }}
-          >
-            Log out
-          </Button>
+          <div style={{ margin: '0 10px 0 auto' }}>
+            Hi, {accountStore.userInfo?.username}
+            <Button
+              style={{ marginLeft: 10 }}
+              onClick={() => {
+                useAccountStore.getState().empty();
+              }}
+            >
+              Log out
+            </Button>
+          </div>
         </Header>
         <Content style={{ margin: '0 16px' }}>
           <Breadcrumb style={{ margin: '16px 0' }}>
